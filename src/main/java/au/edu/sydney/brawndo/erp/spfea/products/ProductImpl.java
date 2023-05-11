@@ -12,6 +12,10 @@ public class ProductImpl implements Product {
     private double[] safetyData;
     private double[] licensingData;
 
+    private ProductFlyweightFactory factory = new ProductFlyweightFactory();
+
+    private ProductDataFlyweight dataFlyweight;
+
     public ProductImpl(String name,
                        double cost,
                        double[] manufacturingData,
