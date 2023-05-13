@@ -12,6 +12,12 @@
 
 ### Too Many Orders
 
+#### builder pattern
+- director: facade
+- builder: OrderBuilder
+- concrete builder: 
+- product: OrderImpl
+
 #### Alternative Solution (400 words max)
 
 ##### Solution Summary
