@@ -5,20 +5,20 @@ import au.edu.sydney.brawndo.erp.ordering.Product;
 public class ProductImpl implements Product {
 
     private final String name;
-//    private final double[] manufacturingData;
+    private final double[] manufacturingData;
     private final double cost;
-//    private double[] recipeData;
-//    private double[] marketingData;
-//    private double[] safetyData;
-//    private double[] licensingData;
+    private double[] recipeData;
+    private double[] marketingData;
+    private double[] safetyData;
+    private double[] licensingData;
 
     private ProductFlyweightFactory factory = new ProductFlyweightFactory();
 
-    private final ProductDataFlyweight manufacturingData;
-    private ProductDataFlyweight recipeData;
-    private ProductDataFlyweight marketingData;
-    private ProductDataFlyweight safetyData;
-    private ProductDataFlyweight licensingData;
+//    private final ProductDataFlyweight manufacturingData;
+//    private ProductDataFlyweight recipeData;
+//    private ProductDataFlyweight marketingData;
+//    private ProductDataFlyweight safetyData;
+//    private ProductDataFlyweight licensingData;
 
     public ProductImpl(String name,
                        double cost,
@@ -34,11 +34,11 @@ public class ProductImpl implements Product {
 //        this.marketingData = marketingData;
 //        this.safetyData = safetyData;
 //        this.licensingData = licensingData;
-        this.manufacturingData = factory.getProductData(manufacturingData);
-        this.recipeData = factory.getProductData(recipeData);
-        this.marketingData = factory.getProductData(marketingData);
-        this.safetyData = factory.getProductData(safetyData);
-        this.licensingData = factory.getProductData(licensingData);
+        this.manufacturingData = factory.getProductData(manufacturingData).getData();
+        this.recipeData = factory.getProductData(recipeData).getData();
+        this.marketingData = factory.getProductData(marketingData).getData();
+        this.safetyData = factory.getProductData(safetyData).getData();
+        this.licensingData = factory.getProductData(licensingData).getData();
     }
 
     @Override
@@ -53,27 +53,27 @@ public class ProductImpl implements Product {
 
     @Override
     public double[] getManufacturingData() {
-        return manufacturingData.getData();
+        return manufacturingData;
     }
 
     @Override
     public double[] getRecipeData() {
-        return recipeData.getData();
+        return recipeData;
     }
 
     @Override
     public double[] getMarketingData() {
-        return marketingData.getData();
+        return marketingData;
     }
 
     @Override
     public double[] getSafetyData() {
-        return safetyData.getData();
+        return safetyData;
     }
 
     @Override
     public double[] getLicensingData() {
-        return licensingData.getData();
+        return licensingData;
     }
 
     @Override
