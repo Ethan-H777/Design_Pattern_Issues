@@ -4,11 +4,12 @@
 
 ### RAM Issue
 
-#### <design pattern name>
+#### Flyweight
 
-- participant name (as defined in the lectures): correlated java class
-- participant name (as defined in the lectures): correlated java class
-- participant name (as defined in the lectures): correlated java class
+- Client:             ProductImpl.java
+- Concrete Flyweight: ProductData.java
+- Flyweight:          ProductDataFlyweight.java
+- Flyweight Factory:  ProductFlyweightFactory.java
 
 ### Too Many Orders
 
