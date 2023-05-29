@@ -16,13 +16,18 @@ public class BusinessBulkDiscountOrder implements Order {
     private double discountRate;
     private int discountThreshold;
     private boolean finalised = false;
+    protected boolean isBusiness;
+    private BusinessStrategy businessStrategy;
 
-    public BusinessBulkDiscountOrder(int id, int customerID, LocalDateTime date, int discountThreshold, double discountRate) {
+    public BusinessBulkDiscountOrder(int id, int customerID, LocalDateTime date, int discountThreshold, double discountRate, boolean isBusiness) {
         this.id = id;
         this.customerID = customerID;
         this.date = date;
         this.discountThreshold = discountThreshold;
         this.discountRate = discountRate;
+        this.isBusiness = isBusiness;
+        if (isBusiness) this.businessStrategy = new BusinessImpl();
+        else this.businessStrategy = new PersonalImpl();
     }
 
     @Override
@@ -99,7 +104,7 @@ public class BusinessBulkDiscountOrder implements Order {
 
     @Override
     public Order copy() {
-        Order copy = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate);
+        Order copy = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate, isBusiness);
         for (Product product: products.keySet()) {
             copy.setProduct(product, products.get(product));
         }

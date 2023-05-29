@@ -14,10 +14,15 @@ import java.util.Map;
 @SuppressWarnings("Duplicates")
 public class NewOrderImplSubscription extends NewOrderImpl implements SubscriptionOrder {
     private int numShipments;
+    private BusinessStrategy businessStrategy;
 
-    public NewOrderImplSubscription(int id, LocalDateTime date, int customerID, double discountRate, int numShipments) {
-        super(id, date, customerID, discountRate);
+
+    public NewOrderImplSubscription(int id, LocalDateTime date, int customerID, double discountRate, int numShipments, boolean isBusiness) {
+        super(id, date, customerID, discountRate, isBusiness);
         this.numShipments = numShipments;
+
+        if (isBusiness) this.businessStrategy  = new BusinessSubscription();
+        else this.businessStrategy = new PersonalSubscription();
     }
 
     @Override
@@ -37,15 +42,16 @@ public class NewOrderImplSubscription extends NewOrderImpl implements Subscripti
 
     @Override
     public String generateInvoiceData() {
-        return String.format("Your business account will be charged: $%,.2f each week, with a total overall cost of: $%,.2f" +
-                "\nPlease see your Brawndo© merchandising representative for itemised details.", getRecurringCost(), getTotalCost());
+//        return String.format("Your business account will be charged: $%,.2f each week, with a total overall cost of: $%,.2f" +
+//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getRecurringCost(), getTotalCost());
+        return businessStrategy.generateInvoiceData(super.getProducts(), getRecurringCost(), getTotalCost());
     }
 
     @Override
     public Order copy() {
         Map<Product, Integer> products = super.getProducts();
 
-        Order copy = new NewOrderImplSubscription(getOrderID(), getOrderDate(), getCustomer(), getDiscountRate(), numShipments);
+        Order copy = new NewOrderImplSubscription(getOrderID(), getOrderDate(), getCustomer(), getDiscountRate(), numShipments, super.isBusiness);
         for (Product product: products.keySet()) {
             copy.setProduct(product, products.get(product));
         }

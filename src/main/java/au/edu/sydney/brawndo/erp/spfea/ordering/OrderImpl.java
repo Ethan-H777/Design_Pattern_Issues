@@ -16,13 +16,30 @@ public class OrderImpl implements Order {
     private int customerID;
     private double discountRate;
     private boolean finalised = false;
+    private int discountThreshold;
+    private int numShipments;
 
-    public OrderImpl(int id, LocalDateTime date, double discountRate, int customerID) {
+    private DiscountStrategy discountStrategy;
+    private BusinessStrategy businessStrategy;
+
+    public OrderImpl(int id, int customerID, LocalDateTime date, boolean isBusiness, boolean isSubscription, int discountType, int discountThreshold, int discountRateRaw, int numShipments) {
         this.id = id;
         this.date = date;
         this.discountRate = discountRate;
         this.customerID = customerID;
+        this.numShipments = numShipments;
+
+        if (discountType == 1) {
+            this.discountStrategy = new FlatDiscount();
+        } else {
+            this.discountStrategy = new BulkDiscount();
+        }
+
+        if (isBusiness) this.businessStrategy = new BusinessImpl();
+        else this.businessStrategy = new PersonalImpl();
+
     }
+
 
     @Override
     public int getOrderID() {
@@ -31,11 +48,7 @@ public class OrderImpl implements Order {
 
     @Override
     public double getTotalCost() {
-        double cost = 0.0;
-        for (Product product: products.keySet()) {
-            cost +=  products.get(product) * product.getCost() * discountRate;
-        }
-        return cost;
+        return discountStrategy.getTotalCost(this);
     }
 
     @Override
@@ -45,25 +58,7 @@ public class OrderImpl implements Order {
 
     @Override
     public void setProduct(Product product, int qty) {
-        if (finalised) throw new IllegalStateException("Order was already finalised.");
 
-        // We can't rely on like products having the same object identity since they get
-        // rebuilt over the network, so we had to check for presence and same values
-
-        for (Product contained: products.keySet()) {
-            if (contained.getCost() == product.getCost() &&
-                    contained.getProductName().equals(product.getProductName()) &&
-                    Arrays.equals(contained.getManufacturingData(), product.getManufacturingData()) &&
-                    Arrays.equals(contained.getRecipeData(), product.getRecipeData()) &&
-                    Arrays.equals(contained.getMarketingData(), product.getMarketingData()) &&
-                    Arrays.equals(contained.getSafetyData(), product.getSafetyData()) &&
-                    Arrays.equals(contained.getLicensingData(), product.getLicensingData())) {
-                product = contained;
-                break;
-            }
-        }
-
-        products.put(product, qty);
     }
 
     @Override
@@ -73,123 +68,54 @@ public class OrderImpl implements Order {
 
     @Override
     public int getProductQty(Product product) {
-        // We can't rely on like products having the same object identity since they get
-        // rebuilt over the network, so we had to check for presence and same values
-
-        for (Product contained: products.keySet()) {
-            if (contained.getCost() == product.getCost() &&
-                    contained.getProductName().equals(product.getProductName()) &&
-                    Arrays.equals(contained.getManufacturingData(), product.getManufacturingData()) &&
-                    Arrays.equals(contained.getRecipeData(), product.getRecipeData()) &&
-                    Arrays.equals(contained.getMarketingData(), product.getMarketingData()) &&
-                    Arrays.equals(contained.getSafetyData(), product.getSafetyData()) &&
-                    Arrays.equals(contained.getLicensingData(), product.getLicensingData())) {
-                product = contained;
-                break;
-            }
-        }
-
-        Integer result = products.get(product);
-        return null == result ? 0 : result;
+        return 0;
     }
 
     @Override
     public String generateInvoiceData() {
-        return String.format("Your business account has been charged: $%,.2f" +
-                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
-
-        //for non bussiness
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("Thank you for your Brawndo© order!\n");
-//        sb.append("Your order comes to: $");
-//        sb.append(String.format("%,.2f", getTotalCost()));
-//        sb.append("\nPlease see below for details:\n");
-//        List<Product> keyList = new ArrayList<>(products.keySet());
-//        keyList.sort(Comparator.comparing(Product::getProductName).thenComparing(Product::getCost));
-//
-//        for (Product product: keyList) {
-//            sb.append("\tProduct name: ");
-//            sb.append(product.getProductName());
-//            sb.append("\tQty: ");
-//            sb.append(products.get(product));
-//            sb.append("\tCost per unit: ");
-//            sb.append(String.format("$%,.2f", product.getCost()));
-//            sb.append("\tSubtotal: ");
-//            sb.append(String.format("$%,.2f\n", product.getCost() * products.get(product)));
-//        }
-//
-//        return sb.toString();
+        return businessStrategy.generateInvoiceData(products, getTotalCost(), getSubCost());
     }
 
     @Override
     public int getCustomer() {
-        return customerID;
+        return 0;
     }
 
     @Override
     public void finalise() {
-        finalised = true;
+
     }
 
     @Override
     public Order copy() {
-        Order copy = new NewOrderImpl(id, date, customerID, discountRate);
-        for (Product product: products.keySet()) {
-            copy.setProduct(product, products.get(product));
-        }
-
-        return copy;
+        return null;
     }
 
     @Override
     public String shortDesc() {
-        return String.format("ID:%s $%,.2f", id, getTotalCost());
+        return null;
     }
 
     @Override
     public String longDesc() {
-        double fullCost = 0.0;
-        double discountedCost = getTotalCost();
-        StringBuilder productSB = new StringBuilder();
-
-        List<Product> keyList = new ArrayList<>(products.keySet());
-        keyList.sort(Comparator.comparing(Product::getProductName).thenComparing(Product::getCost));
-
-        for (Product product: keyList) {
-            double subtotal = product.getCost() * products.get(product);
-            fullCost += subtotal;
-
-            productSB.append(String.format("\tProduct name: %s\tQty: %d\tUnit cost: $%,.2f\tSubtotal: $%,.2f\n",
-                    product.getProductName(),
-                    products.get(product),
-                    product.getCost(),
-                    subtotal));
-        }
-
-        return String.format(finalised ? "" : "*NOT FINALISED*\n" +
-                        "Order details (id #%d)\n" +
-                        "Date: %s\n" +
-                        "Products:\n" +
-                        "%s" +
-                        "\tDiscount: -$%,.2f\n" +
-                        "Total cost: $%,.2f\n",
-                id,
-                date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                productSB.toString(),
-                fullCost - discountedCost,
-                discountedCost
-        );
+        return null;
     }
 
-    protected double getDiscountRate() {
-        return this.discountRate;
+    //subscription methods
+    public double getSubCost() {
+        return getTotalCost() * numShipments;
     }
-    protected Map<Product, Integer> getProducts() {
+
+    public double getDiscountRate() {
+        return discountRate;
+    }
+
+    public double getDiscountThreshold() {
+        return discountThreshold;
+    }
+
+    public Map<Product, Integer> getProducts() {
         return products;
-    }
-    protected boolean isFinalised() {
-        return finalised;
     }
 
 }
