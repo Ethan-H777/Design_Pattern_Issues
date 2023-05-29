@@ -1,4 +1,4 @@
-package au.edu.sydney.brawndo.erp.spfea.ordering;
+package au.edu.sydney.brawndo.erp.spfea.ordering.strategy;
 
 import au.edu.sydney.brawndo.erp.ordering.Order;
 import au.edu.sydney.brawndo.erp.ordering.Product;
