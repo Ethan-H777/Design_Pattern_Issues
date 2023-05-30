@@ -66,16 +66,17 @@ public class ContactHandler {
 //    }
 
     public static boolean sendInvoice(AuthToken token, Customer customer, List<ContactMethod> priority, String data) {
-        for (ContactMethod method : priority) {
-            // set up the chain
-            Handler carrier = new CarrierPigeonHandler(null);
-            Handler mer = new MerchandiserHandler(carrier);
-            Handler phone = new PhoneCallHandler(mer);
-            Handler email = new EmailHandler(phone);
-            Handler mail = new MailHandler(email);
-            Handler sms = new SMSHandler(mail);
+        // set up the chain
+        Handler carrier = new CarrierPigeonHandler(null);
+        Handler mer = new MerchandiserHandler(carrier);
+        Handler phone = new PhoneCallHandler(mer);
+        Handler email = new EmailHandler(phone);
+        Handler mail = new MailHandler(email);
+        Handler sms = new SMSHandler(mail);
 
-            return sms.handleRequest(token, customer, method, data);
+        for (ContactMethod method : priority) {
+            boolean success = sms.handleRequest(token, customer, method, data);
+            if (success) return true;
         }
         return false;
     }

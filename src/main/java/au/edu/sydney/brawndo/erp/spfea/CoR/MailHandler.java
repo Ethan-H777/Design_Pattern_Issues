@@ -13,9 +13,7 @@ public class MailHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.MAIL != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+        if (ContactMethod.MAIL == method) {
             String address = customer.getAddress();
             String suburb = customer.getSuburb();
             String state = customer.getState();
@@ -25,8 +23,8 @@ public class MailHandler extends Handler {
                 Mail.sendInvoice(token, customer.getfName(), customer.getlName(), data, address, suburb, state, postcode);
                 return true;
             }
-            return false;
         }
+        return super.handleRequest(token, customer, method, data);
     }
 
 }

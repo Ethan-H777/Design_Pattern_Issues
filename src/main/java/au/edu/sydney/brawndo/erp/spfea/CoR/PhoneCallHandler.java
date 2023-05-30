@@ -12,16 +12,15 @@ public class PhoneCallHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.PHONECALL != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+        if (ContactMethod.PHONECALL == method) {
             String phone = customer.getPhoneNumber();
             if (null != phone) {
                 PhoneCall.sendInvoice(token, customer.getfName(), customer.getlName(), data, phone);
                 return true;
             }
-            return false;
+
         }
+        return super.handleRequest(token, customer, method, data);
     }
 
 

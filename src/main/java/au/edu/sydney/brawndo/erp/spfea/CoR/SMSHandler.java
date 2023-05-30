@@ -14,16 +14,26 @@ public class SMSHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.SMS != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+//        if (ContactMethod.SMS != method) {
+//            return super.handleRequest(token, customer, method, data);
+//        } else {
+//            String smsPhone = customer.getPhoneNumber();
+//            if (null != smsPhone) {
+//                SMS.sendInvoice(token, customer.getfName(), customer.getlName(), data, smsPhone);
+//                return true;
+//            }
+//            return false;
+//        }
+
+        if (ContactMethod.SMS == method) {
             String smsPhone = customer.getPhoneNumber();
             if (null != smsPhone) {
                 SMS.sendInvoice(token, customer.getfName(), customer.getlName(), data, smsPhone);
                 return true;
             }
-            return false;
         }
+        return super.handleRequest(token, customer, method, data);
+
     }
 
 }

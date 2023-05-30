@@ -13,16 +13,15 @@ public class EmailHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.EMAIL != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+        if (ContactMethod.EMAIL == method) {
             String email = customer.getEmailAddress();
             if (null != email) {
                 Email.sendInvoice(token, customer.getfName(), customer.getlName(), data, email);
                 return true;
             }
-            return false;
+
         }
+        return super.handleRequest(token, customer, method, data);
     }
 
 

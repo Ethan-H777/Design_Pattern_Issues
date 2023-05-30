@@ -12,16 +12,14 @@ public class CarrierPigeonHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.CARRIER_PIGEON != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+        if (ContactMethod.CARRIER_PIGEON == method) {
             String pigeonCoopID = customer.getPigeonCoopID();
             if (null != pigeonCoopID) {
                 CarrierPigeon.sendInvoice(token, customer.getfName(), customer.getlName(), data, pigeonCoopID);
                 return true;
             }
-            return false;
         }
+        return super.handleRequest(token, customer, method, data);
     }
 
 

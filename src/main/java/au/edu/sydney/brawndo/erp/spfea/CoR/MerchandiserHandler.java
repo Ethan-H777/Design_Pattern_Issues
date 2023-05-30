@@ -12,17 +12,15 @@ public class MerchandiserHandler extends Handler {
     }
 
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
-        if (ContactMethod.MERCHANDISER != method) {
-            return super.handleRequest(token, customer, method, data);
-        } else {
+        if (ContactMethod.MERCHANDISER == method) {
             String merchandiser = customer.getMerchandiser();
             String businessName = customer.getBusinessName();
             if (null != merchandiser && null != businessName) {
                 Merchandiser.sendInvoice(token, customer.getfName(), customer.getlName(), data, merchandiser,businessName);
                 return true;
             }
-            return false;
         }
+        return super.handleRequest(token, customer, method, data);
 
     }
 
