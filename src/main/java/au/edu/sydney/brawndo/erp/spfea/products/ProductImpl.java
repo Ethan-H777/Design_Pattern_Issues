@@ -29,6 +29,10 @@ public class ProductImpl implements Product {
         dataFlyweight = factory.getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
     }
 
+    public ProductDataFlyweight getDataFlyweight() {
+        return dataFlyweight;
+    }
+
     @Override
     public String getProductName() {
         return name;

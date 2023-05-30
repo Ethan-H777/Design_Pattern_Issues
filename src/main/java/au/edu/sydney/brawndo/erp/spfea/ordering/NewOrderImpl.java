@@ -5,6 +5,9 @@ import au.edu.sydney.brawndo.erp.ordering.Product;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessImpl;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessStrategy;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.PersonalImpl;
+import au.edu.sydney.brawndo.erp.spfea.products.ProductData;
+import au.edu.sydney.brawndo.erp.spfea.products.ProductFlyweightFactory;
+import au.edu.sydney.brawndo.erp.spfea.products.ProductImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,13 +77,12 @@ public class NewOrderImpl implements Order {
         // rebuilt over the network, so we had to check for presence and same values
 
         for (Product contained: products.keySet()) {
+            ProductImpl product1 = (ProductImpl) product;
+            ProductImpl contained1 = (ProductImpl) contained;
+
             if (contained.getCost() == product.getCost() &&
                     contained.getProductName().equals(product.getProductName()) &&
-                    Arrays.equals(contained.getManufacturingData(), product.getManufacturingData()) &&
-                    Arrays.equals(contained.getRecipeData(), product.getRecipeData()) &&
-                    Arrays.equals(contained.getMarketingData(), product.getMarketingData()) &&
-                    Arrays.equals(contained.getSafetyData(), product.getSafetyData()) &&
-                    Arrays.equals(contained.getLicensingData(), product.getLicensingData())) {
+                    product1.getDataFlyweight().equals(contained1.getDataFlyweight())) {
                 product = contained;
                 break;
             }
