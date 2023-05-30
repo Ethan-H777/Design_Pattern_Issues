@@ -157,8 +157,9 @@ public class BusinessBulkDiscountOrder implements Order {
 
     @Override
     public String generateInvoiceData() {
-        return String.format("Your business account has been charged: $%,.2f" +
-                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
+//        return String.format("Your business account has been charged: $%,.2f" +
+//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
+        return businessStrategy.generateInvoiceData(products, getTotalCost(), getTotalCost());
     }
 
     @Override
