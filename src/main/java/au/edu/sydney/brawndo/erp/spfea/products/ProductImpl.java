@@ -12,7 +12,7 @@ public class ProductImpl implements Product {
 //    private double[] safetyData;
 //    private double[] licensingData;
 
-    private ProductFlyweightFactory factory = new ProductFlyweightFactory();
+    private ProductFlyweightFactory factory;
     private ProductDataFlyweight dataFlyweight;
 
     public ProductImpl(String name,
@@ -24,6 +24,8 @@ public class ProductImpl implements Product {
                        double[] licensingData) {
         this.name = name;
         this.cost = cost;
+
+        factory = new ProductFlyweightFactory();
         dataFlyweight = factory.getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
     }
 
