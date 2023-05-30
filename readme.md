@@ -13,6 +13,11 @@
 
 ### Too Many Orders
 
+#### strategy
+- context: the four order classes
+- strategy: BusinessStrategy.java
+- concrete strategy: BusinessImpl.java, PersonalImpl.java, BusinessSubscription.java, PersonalSubscription.java
+
 #### Alternative Solution (400 words max)
 
 ##### Solution Summary

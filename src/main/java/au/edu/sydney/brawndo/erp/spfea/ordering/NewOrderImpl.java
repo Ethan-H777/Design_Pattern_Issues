@@ -2,6 +2,9 @@ package au.edu.sydney.brawndo.erp.spfea.ordering;
 
 import au.edu.sydney.brawndo.erp.ordering.Order;
 import au.edu.sydney.brawndo.erp.ordering.Product;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessImpl;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessStrategy;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.PersonalImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,12 +21,18 @@ public class NewOrderImpl implements Order {
     private int customerID;
     private double discountRate;
     private boolean finalised = false;
+    protected boolean isBusiness;
+    private BusinessStrategy businessStrategy;
 
-    public NewOrderImpl(int id, LocalDateTime date, int customerID, double discountRate) {
+    public NewOrderImpl(int id, LocalDateTime date, int customerID, double discountRate, boolean isBusiness) {
         this.id = id;
         this.date = date;
         this.customerID = customerID;
         this.discountRate = discountRate;
+        this.isBusiness = isBusiness;
+
+        if (isBusiness) this.businessStrategy = new BusinessImpl();
+        else this.businessStrategy = new PersonalImpl();
     }
 
     @Override
@@ -88,7 +97,7 @@ public class NewOrderImpl implements Order {
 
     @Override
     public Order copy() {
-        Order copy = new NewOrderImpl(id, date, customerID, discountRate);
+        Order copy = new NewOrderImpl(id, date, customerID, discountRate, isBusiness);
         for (Product product: products.keySet()) {
             copy.setProduct(product, products.get(product));
         }
@@ -102,9 +111,11 @@ public class NewOrderImpl implements Order {
 
     @Override
     public String generateInvoiceData() {
-        return String.format("Your business account has been charged: $%,.2f" +
-                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
+//        return String.format("Your business account has been charged: $%,.2f" +
+//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
+        return businessStrategy.generateInvoiceData(products, getTotalCost(), getTotalCost());
     }
+
 
     @Override
     public double getTotalCost() {

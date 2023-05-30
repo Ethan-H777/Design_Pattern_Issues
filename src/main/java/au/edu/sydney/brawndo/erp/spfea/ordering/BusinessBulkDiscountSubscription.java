@@ -3,6 +3,9 @@ package au.edu.sydney.brawndo.erp.spfea.ordering;
 import au.edu.sydney.brawndo.erp.ordering.Order;
 import au.edu.sydney.brawndo.erp.ordering.Product;
 import au.edu.sydney.brawndo.erp.ordering.SubscriptionOrder;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessStrategy;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessSubscription;
+import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.PersonalSubscription;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,10 +17,13 @@ import java.util.Map;
 @SuppressWarnings("Duplicates")
 public class BusinessBulkDiscountSubscription extends BusinessBulkDiscountOrder implements SubscriptionOrder {
     private int numShipments;
+    private BusinessStrategy businessStrategy;
 
-    public BusinessBulkDiscountSubscription(int id, int customerID, LocalDateTime date, int discountThreshold, double discountRate, int numShipments) {
-        super(id, customerID, date, discountThreshold, discountRate);
+    public BusinessBulkDiscountSubscription(int id, int customerID, LocalDateTime date, int discountThreshold, double discountRate, int numShipments, boolean isBusiness) {
+        super(id, customerID, date, discountThreshold, discountRate, isBusiness);
         this.numShipments = numShipments;
+        if (isBusiness) this.businessStrategy = new BusinessSubscription();
+        else this.businessStrategy = new PersonalSubscription();
     }
 
     @Override
@@ -37,15 +43,16 @@ public class BusinessBulkDiscountSubscription extends BusinessBulkDiscountOrder 
 
     @Override
     public String generateInvoiceData() {
-        return String.format("Your business account will be charged: $%,.2f each week, with a total overall cost of: $%,.2f" +
-                "\nPlease see your Brawndo© merchandising representative for itemised details.", getRecurringCost(), getTotalCost());
+//        return String.format("Your business account will be charged: $%,.2f each week, with a total overall cost of: $%,.2f" +
+//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getRecurringCost(), getTotalCost());
+        return businessStrategy.generateInvoiceData(super.getProducts(), getRecurringCost(), getTotalCost());
     }
 
     @Override
     public Order copy() {
         Map<Product, Integer> products = super.getProducts();
 
-        Order copy = new BusinessBulkDiscountSubscription(getOrderID(), getCustomer(), getOrderDate(), getDiscountThreshold(), getDiscountRate(), numShipments);
+        Order copy = new BusinessBulkDiscountSubscription(getOrderID(), getCustomer(), getOrderDate(), getDiscountThreshold(), getDiscountRate(), numShipments, isBusiness);
         for (Product product: products.keySet()) {
             copy.setProduct(product, products.get(product));
         }

@@ -64,29 +64,34 @@ public class SPFEAFacade {
         if (isSubscription) {
             if (1 == discountType) { // 1 is flat rate
                     if (isBusiness) {
-                         order = new NewOrderImplSubscription(id, date, customerID, discountRate, numShipments);
+//                         order = new NewOrderImplSubscription(id, date, customerID, discountRate, numShipments);
+                        order = new NewOrderImplSubscription(id, date, customerID, discountRate, numShipments, true);
                     } else {
-                        order = new Order66Subscription(id, date, discountRate, customerID, numShipments);
+//                        order = new Order66Subscription(id, date, discountRate, customerID, numShipments);
+                        order = new NewOrderImplSubscription(id, date, customerID, discountRate, numShipments, false);
                     }
                 } else if (2 == discountType) { // 2 is bulk discount
                     if (isBusiness) {
-                        order = new BusinessBulkDiscountSubscription(id, customerID, date, discountThreshold, discountRate, numShipments);
+                        order = new BusinessBulkDiscountSubscription(id, customerID, date, discountThreshold, discountRate, numShipments, true);
                     } else {
-                        order = new FirstOrderSubscription(id, date, discountRate, discountThreshold, customerID, numShipments);
+//                        order = new FirstOrderSubscription(id, date, discountRate, discountThreshold, customerID, numShipments);
+                        order = new BusinessBulkDiscountSubscription(id, customerID, date, discountThreshold, discountRate, numShipments, false);
                     }
             } else {return null;}
         } else {
             if (1 == discountType) {
                 if (isBusiness) {
-                    order = new NewOrderImpl(id, date, customerID, discountRate);
+                    order = new NewOrderImpl(id, date, customerID, discountRate, true);
                 } else {
-                    order = new Order66(id, date, discountRate, customerID);
+//                    order = new Order66(id, date, discountRate, customerID);
+                    order = new NewOrderImpl(id, date, customerID, discountRate, false);
                 }
             } else if (2 == discountType) {
                 if (isBusiness) {
-                    order = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate);
+                    order = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate, true);
                 } else {
-                    order = new FirstOrder(id, date, discountRate, discountThreshold, customerID);
+//                    order = new FirstOrder(id, date, discountRate, discountThreshold, customerID);
+                    order = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate, false);
                 }
             } else {return null;}
         }
