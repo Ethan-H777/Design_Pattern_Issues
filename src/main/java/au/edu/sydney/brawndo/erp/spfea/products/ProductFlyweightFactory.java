@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProductFlyweightFactory {
-    private Map<String, ProductData> flyweights;
+    private static Map<String, ProductData> flyweights = new HashMap<>();
 
     public ProductFlyweightFactory() {
-        this.flyweights = new HashMap<>();
+        flyweights = new HashMap<>();
     }
 
-    public ProductData getProductData(double[] manufacturingData,
+    public static ProductData getProductData(double[] manufacturingData,
                                       double[] recipeData,
                                       double[] marketingData,
                                       double[] safetyData,
@@ -25,4 +25,5 @@ public class ProductFlyweightFactory {
 
         return flyweights.get(key);
     }
+
 }
