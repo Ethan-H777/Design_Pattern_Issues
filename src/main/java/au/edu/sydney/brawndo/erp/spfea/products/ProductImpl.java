@@ -2,6 +2,8 @@ package au.edu.sydney.brawndo.erp.spfea.products;
 
 import au.edu.sydney.brawndo.erp.ordering.Product;
 
+import java.util.Arrays;
+
 public class ProductImpl implements Product {
 
     private final String name;
@@ -25,12 +27,24 @@ public class ProductImpl implements Product {
         this.name = name;
         this.cost = cost;
 
-        factory = new ProductFlyweightFactory();
-        dataFlyweight = factory.getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
+//        factory = new ProductFlyweightFactory();
+//        dataFlyweight = factory.getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
+        dataFlyweight = ProductFlyweightFactory.getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
     }
 
     public ProductDataFlyweight getDataFlyweight() {
         return dataFlyweight;
+    }
+
+    public boolean equals(Object object) {
+        if (object == this) return true;
+        if (!(object instanceof Product)) return false;
+        Product obj = (Product) object;
+        return obj.getProductName().equals(this.name) && obj.getCost() == this.cost && Arrays.equals(obj.getManufacturingData(), getManufacturingData()) &&
+                Arrays.equals(obj.getRecipeData(), getRecipeData()) &&
+                Arrays.equals(obj.getMarketingData(), getMarketingData()) &&
+                Arrays.equals(obj.getSafetyData(), getSafetyData()) &&
+                Arrays.equals(obj.getLicensingData(), getLicensingData());
     }
 
     @Override

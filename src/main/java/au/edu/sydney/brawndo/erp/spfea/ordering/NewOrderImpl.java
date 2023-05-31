@@ -51,13 +51,7 @@ public class NewOrderImpl implements Order {
         // rebuilt over the network, so we had to check for presence and same values
 
         for (Product contained: products.keySet()) {
-            if (contained.getCost() == product.getCost() &&
-                    contained.getProductName().equals(product.getProductName()) &&
-                    Arrays.equals(contained.getManufacturingData(), product.getManufacturingData()) &&
-                    Arrays.equals(contained.getRecipeData(), product.getRecipeData()) &&
-                    Arrays.equals(contained.getMarketingData(), product.getMarketingData()) &&
-                    Arrays.equals(contained.getSafetyData(), product.getSafetyData()) &&
-                    Arrays.equals(contained.getLicensingData(), product.getLicensingData())) {
+            if (contained.equals(product)) {
                 product = contained;
                 break;
             }
@@ -77,12 +71,7 @@ public class NewOrderImpl implements Order {
         // rebuilt over the network, so we had to check for presence and same values
 
         for (Product contained: products.keySet()) {
-            ProductImpl product1 = (ProductImpl) product;
-            ProductImpl contained1 = (ProductImpl) contained;
-
-            if (contained.getCost() == product.getCost() &&
-                    contained.getProductName().equals(product.getProductName()) &&
-                    product1.getDataFlyweight().equals(contained1.getDataFlyweight())) {
+            if (contained.equals(product)) {
                 product = contained;
                 break;
             }
