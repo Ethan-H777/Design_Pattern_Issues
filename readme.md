@@ -44,6 +44,13 @@ How did you solution solve the problem, be brief.
 
 ### Hard to Compare Products
 
+#### Flyweight 
+- Client:             ProductImpl.java
+- Concrete Flyweight: ProductData.java
+- Flyweight:          ProductDataFlyweight.java
+- Flyweight Factory:  ProductFlyweightFactory.java
+
+The pattern that applied before happens to solve this issue as well.
 
 ### Slow Order Creation
 
