@@ -17,6 +17,7 @@ import java.util.List;
 @SuppressWarnings("Duplicates")
 public class SPFEAFacade {
     private AuthToken token;
+    private List<Integer> customerIDs;
 
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
@@ -105,8 +106,13 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        TestDatabase database = TestDatabase.getInstance();
-        return database.getCustomerIDs(token);
+        if (this.customerIDs == null) {
+            TestDatabase database = TestDatabase.getInstance();
+            this.customerIDs = database.getCustomerIDs(token);
+        }
+
+        return this.customerIDs;
+//        return database.getCustomerIDs(token);
     }
 
     public Customer getCustomer(int id) {

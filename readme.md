@@ -53,6 +53,7 @@ How did you solution solve the problem, be brief.
 The pattern that applied before happens to solve this issue as well.
 
 ### Slow Order Creation
+Lazy load pattern is used for Facade.getCustomerIDs() method to reduce the time when accessing database.
 
 
 ## Notes About the Submission
