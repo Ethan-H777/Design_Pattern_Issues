@@ -33,6 +33,7 @@ public class CustomerImpl implements Customer {
         this.merchandiser = TestDatabase.getInstance().getCustomerField(token, id, "merchandiser");
         this.businessName = TestDatabase.getInstance().getCustomerField(token, id, "businessName");
         this.pigeonCoopID = TestDatabase.getInstance().getCustomerField(token, id, "pigeonCoopID");
+
     }
 
     public int getId() {

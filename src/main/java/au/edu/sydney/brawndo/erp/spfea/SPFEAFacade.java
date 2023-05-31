@@ -10,16 +10,16 @@ import au.edu.sydney.brawndo.erp.spfea.ordering.*;
 import au.edu.sydney.brawndo.erp.spfea.products.ProductDatabase;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class SPFEAFacade {
     private AuthToken token;
+    private Map<Integer, CustomerImpl> customers;
 
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
+        this.customers = new HashMap<>();
 
         return null != token;
     }
@@ -113,8 +113,11 @@ public class SPFEAFacade {
         if (null == token) {
             throw new SecurityException();
         }
+        if (!this.customers.containsKey(id)) {
+            this.customers.put(id, new CustomerImpl(token, id));
 
-        return new CustomerImpl(token, id);
+        }
+        return this.customers.get(id);
     }
 
     public boolean removeOrder(int id) {
