@@ -6,6 +6,8 @@ import au.edu.sydney.brawndo.erp.ordering.Order;
 
 public class OrderSaver {
     public void save(AuthToken token, Order order) {
-        TestDatabase.getInstance().saveOrder(token, order);
+        synchronized (TestDatabase.class) {
+            TestDatabase.getInstance().saveOrder(token, order);
+        }
     }
 }

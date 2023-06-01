@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @SuppressWarnings("Duplicates")
 public class SPFEAFacade {
@@ -20,13 +22,16 @@ public class SPFEAFacade {
     private List<Integer> customerIDs;
 
     private OrderSaverProxy proxy;
+    private OrderSaverScheduler scheduler;
+    private List<Future<Void>> futures;
 
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
 
         OrderSaver saver = new OrderSaver();
-        OrderSaverScheduler scheduler = new OrderSaverScheduler(saver);
+        this.scheduler = new OrderSaverScheduler(saver);
         this.proxy = new OrderSaverProxy(scheduler);
+        this.futures = new ArrayList<>();
 
         return null != token;
     }
@@ -104,9 +109,15 @@ public class SPFEAFacade {
         }
 
 //        TestDatabase.getInstance().saveOrder(token, order);
-        synchronized (TestDatabase.class) {
-            proxy.doTask(token, order);
-        }
+//        try {
+            synchronized (TestDatabase.class) {
+                futures.add(proxy.doTask(token, order));
+//                future.get();
+            }
+//        } catch (InterruptedException | ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+
 
         return order.getOrderID();
     }
@@ -213,6 +224,16 @@ public class SPFEAFacade {
     public void logout() {
         AuthModule.logout(token);
         token = null;
+
+        try {
+            for (Future<Void> f : futures) {
+                f.get();
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.scheduler.cleanUp();
     }
 
     public double getOrderTotalCost(int orderID) {
