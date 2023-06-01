@@ -111,7 +111,7 @@ public class SPFEAFacade {
 
         if (this.customerIDs == null) {
             TestDatabase database = TestDatabase.getInstance();
-            database.getCustomerIDs(token);
+            this.customerIDs = database.getCustomerIDs(token);
         }
         return this.customerIDs;
     }
