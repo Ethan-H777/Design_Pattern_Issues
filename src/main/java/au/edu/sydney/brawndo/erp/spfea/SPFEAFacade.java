@@ -16,6 +16,7 @@ import java.util.*;
 public class SPFEAFacade {
     private AuthToken token;
     private Map<Integer, CustomerImpl> customers;
+    private List<Integer> customerIDs;
 
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
@@ -105,8 +106,14 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        TestDatabase database = TestDatabase.getInstance();
-        return database.getCustomerIDs(token);
+//        TestDatabase database = TestDatabase.getInstance();
+//        return database.getCustomerIDs(token);
+
+        if (this.customerIDs == null) {
+            TestDatabase database = TestDatabase.getInstance();
+            database.getCustomerIDs(token);
+        }
+        return this.customerIDs;
     }
 
     public Customer getCustomer(int id) {
