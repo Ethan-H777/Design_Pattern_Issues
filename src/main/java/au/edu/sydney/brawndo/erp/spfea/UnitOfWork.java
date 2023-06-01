@@ -22,6 +22,10 @@ public class UnitOfWork {
         this.createdOrders.add(order);
     }
 
+    /**
+     * Commits the created orders by saving them to the database.
+     * If there are no created orders, this method does nothing.
+     */
     public void commit() {
         if (createdOrders.isEmpty()) return;
 

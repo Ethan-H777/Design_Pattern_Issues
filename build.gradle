@@ -31,8 +31,6 @@ test {
 
 run {
     standardInput = System.in
-//    def inputFile = file('src/test/resources/testNewBusinessSubFlatOrder.in')
-//    standardInput = new FileInputStream(inputFile)
 }
 
 mainClassName = "au.edu.sydney.brawndo.erp.view.CLI"

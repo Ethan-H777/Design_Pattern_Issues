@@ -10,7 +10,6 @@ public class CarrierPigeonHandler extends Handler {
     public CarrierPigeonHandler(Handler nextHandler) {
         super(nextHandler);
     }
-
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
         if (ContactMethod.CARRIER_PIGEON == method) {
             String pigeonCoopID = customer.getPigeonCoopID();

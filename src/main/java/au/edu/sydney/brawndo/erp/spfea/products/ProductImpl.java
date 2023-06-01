@@ -7,14 +7,9 @@ import java.util.Arrays;
 public class ProductImpl implements Product {
 
     private final String name;
-//    private final double[] manufacturingData;
     private final double cost;
-//    private double[] recipeData;
-//    private double[] marketingData;
-//    private double[] safetyData;
-//    private double[] licensingData;
 
-//    private ProductFlyweightFactory factory;
+    //dataFlyweight contains five types of data
     private ProductDataFlyweight dataFlyweight;
 
     public ProductImpl(String name,
@@ -27,19 +22,18 @@ public class ProductImpl implements Product {
         this.name = name;
         this.cost = cost;
 
+        // pass in these data into flyweight factory to get flyweight instance
         dataFlyweight = ProductFlyweightFactory.getInstance().getProductData(manufacturingData,recipeData,marketingData,safetyData,licensingData);
 
     }
 
-    public ProductDataFlyweight getDataFlyweight() {
-        return dataFlyweight;
-    }
-
+    //Value object: override equals and hashCode
     @Override
     public boolean equals(Object object) {
         if (object == this) return true;
         if (!(object instanceof Product)) return false;
         Product obj = (Product) object;
+
         return obj.getProductName().equals(this.name) && obj.getCost() == this.cost && Arrays.equals(obj.getManufacturingData(), getManufacturingData()) &&
                 Arrays.equals(obj.getRecipeData(), getRecipeData()) &&
                 Arrays.equals(obj.getMarketingData(), getMarketingData()) &&
@@ -51,6 +45,7 @@ public class ProductImpl implements Product {
     public int hashCode() {
         int result = (name != null ? name.hashCode() : 0);
 
+        //convert the cost into bits and hash the bits, then cast the hash into integer
         long doubleBits = Double.doubleToLongBits(cost);
         int doubleHash = (int) (doubleBits ^ (doubleBits >>> 32));
         result = 31 * result + doubleHash;
@@ -95,7 +90,6 @@ public class ProductImpl implements Product {
 
     @Override
     public String toString() {
-
         return String.format("%s", name);
     }
 }

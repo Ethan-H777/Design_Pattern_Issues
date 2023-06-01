@@ -67,9 +67,6 @@ public class NewOrderImpl implements Order {
 
     @Override
     public int getProductQty(Product product) {
-        // We can't rely on like products having the same object identity since they get
-        // rebuilt over the network, so we had to check for presence and same values
-
         for (Product contained: products.keySet()) {
             if (contained.equals(product)) {
                 product = contained;
@@ -102,8 +99,6 @@ public class NewOrderImpl implements Order {
 
     @Override
     public String generateInvoiceData() {
-//        return String.format("Your business account has been charged: $%,.2f" +
-//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
         return businessStrategy.generateInvoiceData(products, getTotalCost(), getTotalCost());
     }
 

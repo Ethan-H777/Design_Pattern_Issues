@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PersonalImpl implements BusinessStrategy {
+    /**
+     * Generates the invoice data for personal non-subscription order.
+     *
+     * @param products the map of products and their quantities
+     * @param cost     the total cost for non subscription order (the recurring cost for subscription order)
+     * @param subCost  the total cost for subscription order
+     * @return the generated invoice data
+     */
     @Override
     public String generateInvoiceData(Map<Product, Integer> products, double cost, double subCost) {
         StringBuilder sb = new StringBuilder();

@@ -45,8 +45,6 @@ public class NewOrderImplSubscription extends NewOrderImpl implements Subscripti
 
     @Override
     public String generateInvoiceData() {
-//        return String.format("Your business account will be charged: $%,.2f each week, with a total overall cost of: $%,.2f" +
-//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getRecurringCost(), getTotalCost());
         return businessStrategy.generateInvoiceData(super.getProducts(), getRecurringCost(), getTotalCost());
     }
 

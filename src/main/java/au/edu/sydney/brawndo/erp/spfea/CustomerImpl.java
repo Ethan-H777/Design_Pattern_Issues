@@ -20,7 +20,7 @@ public class CustomerImpl implements Customer {
     private String pigeonCoopID;
 
     public CustomerImpl(AuthToken token, int id) {
-
+        // get the data from database
         this.id = id;
         this.fName = TestDatabase.getInstance().getCustomerField(token, id, "fName");
         this.lName = TestDatabase.getInstance().getCustomerField(token, id, "lName");

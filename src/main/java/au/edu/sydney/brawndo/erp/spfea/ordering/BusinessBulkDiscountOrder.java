@@ -5,7 +5,6 @@ import au.edu.sydney.brawndo.erp.ordering.Product;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessImpl;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.BusinessStrategy;
 import au.edu.sydney.brawndo.erp.spfea.ordering.strategy.PersonalImpl;
-import au.edu.sydney.brawndo.erp.spfea.products.ProductImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,10 +42,8 @@ public class BusinessBulkDiscountOrder implements Order {
     public void setProduct(Product product, int qty) {
         if (finalised) throw new IllegalStateException("Order was already finalised.");
 
-        // We can't rely on like products having the same object identity since they get
-        // rebuilt over the network, so we had to check for presence and same values
-
         for (Product contained: products.keySet()) {
+            // check two products are the same
             if (contained.equals(product)) {
                 product = contained;
                 break;
@@ -63,9 +60,6 @@ public class BusinessBulkDiscountOrder implements Order {
 
     @Override
     public int getProductQty(Product product) {
-        // We can't rely on like products having the same object identity since they get
-        // rebuilt over the network, so we had to check for presence and same values
-
         for (Product contained: products.keySet()) {
             if (contained.equals(product)) {
                 product = contained;
@@ -94,6 +88,11 @@ public class BusinessBulkDiscountOrder implements Order {
         return this.discountThreshold;
     }
 
+    /**
+     * Creates a copy of the current order.
+     *
+     * @return a new Order object that is a copy of the current order
+     */
     @Override
     public Order copy() {
         Order copy = new BusinessBulkDiscountOrder(id, customerID, date, discountThreshold, discountRate, isBusiness);
@@ -146,11 +145,14 @@ public class BusinessBulkDiscountOrder implements Order {
 
     @Override
     public String generateInvoiceData() {
-//        return String.format("Your business account has been charged: $%,.2f" +
-//                "\nPlease see your Brawndo© merchandising representative for itemised details.", getTotalCost());
         return businessStrategy.generateInvoiceData(products, getTotalCost(), getTotalCost());
     }
 
+    /**
+     * Calculates the total cost of the order, taking into account any applicable discounts.
+     *
+     * @return the total cost of the order
+     */
     @Override
     public double getTotalCost() {
         double cost = 0.0;

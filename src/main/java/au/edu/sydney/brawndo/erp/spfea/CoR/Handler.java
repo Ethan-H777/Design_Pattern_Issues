@@ -11,6 +11,15 @@ public abstract class Handler {
         this.nextHandler = nextHandler;
     }
 
+    /**
+     * Handles a request by either processing it or passing it to the next handler in the chain.
+     *
+     * @param token    the authentication token
+     * @param customer the customer for whom the invoice request is being handled
+     * @param method   the contact method
+     * @param data     the data associated with the invoice
+     * @return true if the request was handled, false otherwise
+     */
     public boolean handleRequest(AuthToken token, Customer customer, ContactMethod method, String data) {
         if (nextHandler != null) {
             return nextHandler.handleRequest(token, customer, method, data);
