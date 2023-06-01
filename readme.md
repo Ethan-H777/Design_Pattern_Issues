@@ -11,10 +11,10 @@
 - Flyweight:          ProductDataFlyweight.java
 - Flyweight Factory:  ProductFlyweightFactory.java
 
-My device would run out of memory and fail the testings when dealing with the whole product data (5000000 size). I lower it to 1000 size for the purposing of implementing.
+My device would run out of memory and fail the testings when dealing with the whole product data (500000 size). 
+I lower it to 1000 size for the purposing of implementing, but I changed it back to original for submission.
 
 ed post link: https://edstem.org/au/courses/11117/discussion/1388745
-
 
 ### Too Many Orders
 #### strategy

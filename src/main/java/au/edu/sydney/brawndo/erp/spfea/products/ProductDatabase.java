@@ -71,7 +71,7 @@ public class ProductDatabase {
         The database doesn't though...
          */
 
-        double[] result = new double[1000];
+        double[] result = new double[500000];
         Random random = new Random();
 
         for (int i = 0; i < result.length; i++) {
