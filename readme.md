@@ -22,6 +22,8 @@ ed post link: https://edstem.org/au/courses/11117/discussion/1388745
 - strategy: BusinessStrategy.java
 - concrete strategy: BusinessImpl.java, PersonalImpl.java, BusinessSubscription.java, PersonalSubscription.java
 
+I have reduced number of Order class by half from 66 * 2 * 2 to 66 * 2 by introducing business strategy.
+
 #### Alternative Solution (400 words max)
 
 ##### Solution Summary
