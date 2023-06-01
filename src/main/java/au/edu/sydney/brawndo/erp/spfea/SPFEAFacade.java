@@ -17,10 +17,12 @@ public class SPFEAFacade {
     private AuthToken token;
     private Map<Integer, CustomerImpl> customers;
     private List<Integer> customerIDs;
+    private UnitOfWork uow;
 
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
         this.customers = new HashMap<>();
+        this.uow = new UnitOfWork(token);
 
         return null != token;
     }
@@ -97,7 +99,8 @@ public class SPFEAFacade {
             } else {return null;}
         }
 
-        TestDatabase.getInstance().saveOrder(token, order);
+//        TestDatabase.getInstance().saveOrder(token, order);
+        uow.registerOrder(order);
         return order.getOrderID();
     }
 
@@ -188,14 +191,19 @@ public class SPFEAFacade {
             );
         }
 
+        uow.commit();
         Order order = TestDatabase.getInstance().getOrder(token, orderID);
-
+//        Order order = uow.getOrder(orderID);
         order.finalise();
-        TestDatabase.getInstance().saveOrder(token, order);
+        uow.registerOrder(order);
+        uow.commit();
+//        TestDatabase.getInstance().saveOrder(token, order);
+
         return ContactHandler.sendInvoice(token, getCustomer(order.getCustomer()), contactPriorityAsMethods, order.generateInvoiceData());
     }
 
     public void logout() {
+        uow.commit();
         AuthModule.logout(token);
         token = null;
     }
@@ -205,7 +213,9 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
+        uow.commit();
         Order order = TestDatabase.getInstance().getOrder(token, orderID);
+
         if (null == order) {
             return 0.0;
         }
@@ -218,6 +228,7 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
+        uow.commit();
         Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
         if (null == order) {
@@ -227,7 +238,8 @@ public class SPFEAFacade {
 
         order.setProduct(product, qty);
 
-        TestDatabase.getInstance().saveOrder(token, order);
+//        TestDatabase.getInstance().saveOrder(token, order);
+        uow.registerOrder(order);
     }
 
     public String getOrderLongDesc(int orderID) {
@@ -235,6 +247,7 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
+        uow.commit();
         Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
         if (null == order) {
@@ -249,6 +262,7 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
+        uow.commit();
         Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
         if (null == order) {
