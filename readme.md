@@ -42,23 +42,11 @@ How did you solution solve the problem, be brief.
 ### System Lag
 
 
+
 ### Hard to Compare Products
+#### Value Object
 
-#### Alternative Solution (400 words max)
-##### Solution Summary
-I override the equals() method of ProductImpl class,
-therefore, I can just check if product1.equals(product2) to compare two Product objects.
-
-##### Solution Benefit
-This way is effective and simple. Additionally, this solution is also beneficial for future maintenance.
-Any changes to the comparing logic of Product class, other class/code will not be affected such as Order class.
-This also follows the encapsulation principle where Order class have no knowledge about the detailed comparing logic between products.
-
-I was trying to cast Product objects into ProductImpl objects, then I can compare the flyweights stored in two objects.
-Because, identical products shall have the same name, cost and flyweight. However, casting is not considered in the scope test.
-The mock does not support casting Product object to ProductImpl object, in order to access getFlyweight() method.
-The Product interface is not allowed to modify too, so the best solution is overriding which has less complexity than adapter pattern.
-(adapter pattern is not covered in this unit, so I choose Override)
+- ProductImpl.java: override equals() and hashCode() methods.
 
 ### Slow Order Creation
 

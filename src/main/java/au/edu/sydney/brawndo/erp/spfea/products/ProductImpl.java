@@ -36,6 +36,7 @@ public class ProductImpl implements Product {
         return dataFlyweight;
     }
 
+    @Override
     public boolean equals(Object object) {
         if (object == this) return true;
         if (!(object instanceof Product)) return false;
@@ -45,6 +46,17 @@ public class ProductImpl implements Product {
                 Arrays.equals(obj.getMarketingData(), getMarketingData()) &&
                 Arrays.equals(obj.getSafetyData(), getSafetyData()) &&
                 Arrays.equals(obj.getLicensingData(), getLicensingData());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (name != null ? name.hashCode() : 0);
+
+        long doubleBits = Double.doubleToLongBits(cost);
+        int doubleHash = (int) (doubleBits ^ (doubleBits >>> 32));
+        result = 31 * result + doubleHash;
+        result = 31 * result + (dataFlyweight != null ? dataFlyweight.hashCode() : 0);
+        return result;
     }
 
     @Override
