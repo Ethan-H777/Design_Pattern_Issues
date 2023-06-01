@@ -40,6 +40,11 @@ How did you solution solve the problem, be brief.
 - Handler:            Handler.java
 
 ### System Lag
+#### Lazy Load: lazy initialization
+
+I have implemented lazy load within the Facade class by caching customers. 
+The getCustomer() has been modified to adapt lazy initialization. 
+This save time when user view the same customer multiple times.
 
 
 
