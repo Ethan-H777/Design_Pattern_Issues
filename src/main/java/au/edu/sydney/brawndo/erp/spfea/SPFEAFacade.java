@@ -19,8 +19,14 @@ public class SPFEAFacade {
     private AuthToken token;
     private List<Integer> customerIDs;
 
+    private OrderSaverProxy proxy;
+
     public boolean login(String userName, String password) {
         token = AuthModule.login(userName, password);
+
+        OrderSaver saver = new OrderSaver();
+        OrderSaverScheduler scheduler = new OrderSaverScheduler(saver);
+        this.proxy = new OrderSaverProxy(scheduler);
 
         return null != token;
     }
@@ -97,9 +103,14 @@ public class SPFEAFacade {
             } else {return null;}
         }
 
-        TestDatabase.getInstance().saveOrder(token, order);
+//        TestDatabase.getInstance().saveOrder(token, order);
+        synchronized (TestDatabase.class) {
+            proxy.doTask(token, order);
+        }
+
         return order.getOrderID();
     }
+
 
     public List<Integer> getAllCustomerIDs() {
         if (null == token) {
@@ -108,7 +119,9 @@ public class SPFEAFacade {
 
         if (this.customerIDs == null) {
             TestDatabase database = TestDatabase.getInstance();
-            this.customerIDs = database.getCustomerIDs(token);
+            synchronized (TestDatabase.class) {
+                this.customerIDs = database.getCustomerIDs(token);
+            }
         }
 
         return this.customerIDs;
@@ -129,7 +142,9 @@ public class SPFEAFacade {
         }
 
         TestDatabase database = TestDatabase.getInstance();
-        return database.removeOrder(token, id);
+        synchronized (TestDatabase.class) {
+            return database.removeOrder(token, id);
+        }
     }
 
     public List<Product> getAllProducts() {
@@ -184,11 +199,15 @@ public class SPFEAFacade {
             );
         }
 
-        Order order = TestDatabase.getInstance().getOrder(token, orderID);
+        synchronized (TestDatabase.class) {
+            Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
-        order.finalise();
-        TestDatabase.getInstance().saveOrder(token, order);
-        return ContactHandler.sendInvoice(token, getCustomer(order.getCustomer()), contactPriorityAsMethods, order.generateInvoiceData());
+
+            order.finalise();
+//            TestDatabase.getInstance().saveOrder(token, order);
+            proxy.doTask(token, order);
+            return ContactHandler.sendInvoice(token, getCustomer(order.getCustomer()), contactPriorityAsMethods, order.generateInvoiceData());
+        }
     }
 
     public void logout() {
@@ -201,12 +220,15 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        Order order = TestDatabase.getInstance().getOrder(token, orderID);
-        if (null == order) {
-            return 0.0;
-        }
+        synchronized (TestDatabase.class) {
+            Order order = TestDatabase.getInstance().getOrder(token, orderID);
+            if (null == order) {
+                return 0.0;
+            }
 
-        return order.getTotalCost();
+
+            return order.getTotalCost();
+        }
     }
 
     public void orderLineSet(int orderID, Product product, int qty) {
@@ -214,16 +236,19 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        Order order = TestDatabase.getInstance().getOrder(token, orderID);
+        synchronized (TestDatabase.class) {
+            Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
-        if (null == order) {
-            System.out.println("got here");
-            return;
+            if (null == order) {
+                System.out.println("got here");
+                return;
+            }
+
+            order.setProduct(product, qty);
+
+//            TestDatabase.getInstance().saveOrder(token, order);
+            proxy.doTask(token, order);
         }
-
-        order.setProduct(product, qty);
-
-        TestDatabase.getInstance().saveOrder(token, order);
     }
 
     public String getOrderLongDesc(int orderID) {
@@ -231,13 +256,15 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        Order order = TestDatabase.getInstance().getOrder(token, orderID);
+        synchronized (TestDatabase.class) {
+            Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
-        if (null == order) {
-            return null;
+            if (null == order) {
+                return null;
+            }
+
+            return order.longDesc();
         }
-
-        return order.longDesc();
     }
 
     public String getOrderShortDesc(int orderID) {
@@ -245,13 +272,15 @@ public class SPFEAFacade {
             throw new SecurityException();
         }
 
-        Order order = TestDatabase.getInstance().getOrder(token, orderID);
+        synchronized (TestDatabase.class) {
+            Order order = TestDatabase.getInstance().getOrder(token, orderID);
 
-        if (null == order) {
-            return null;
+            if (null == order) {
+                return null;
+            }
+
+            return order.shortDesc();
         }
-
-        return order.shortDesc();
     }
 
     public List<String> getKnownContactMethods() {if (null == token) {
