@@ -11,10 +11,6 @@
 - Flyweight:          ProductDataFlyweight.java
 - Flyweight Factory:  ProductFlyweightFactory.java
 
-My device would run out of memory and fail the testings when dealing with the whole product data (500000 size). 
-I lower it to 1000 size for the purposing of implementing, but I changed it back to original for submission.
-
-ed post link: https://edstem.org/au/courses/11117/discussion/1388745
 
 ### Too Many Orders
 #### strategy
@@ -65,6 +61,14 @@ The equals() and hashCode() methods have been override.
 - Client: SPFEAFacade.java
 
 ## Notes About the Submission
+
+- Mocking ProductDatabase.class would raise error. 
+
+My device would run out of memory and fail the testings when dealing with the whole product data (500000 size).
+  I lower it to 1000 for the purposing of implementing (so getAllProducts() testcase won't fail on my end),
+  but it has been changed back to original for submission as instructed in A2 FAQ post.
+
+ed post link: https://edstem.org/au/courses/11117/discussion/1388745
 
 - to run: gradle run
 - to test: gradle test
